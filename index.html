@@ -3,13 +3,19 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Choropleth UG map</title>
+    <title>UG map with Tooltip to show aggregated coverage score</title>
 
     <!-- Custom CSS styles -->
     <link href="style.css" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <h3>Choropleth UG map</h3>
+    <!-- Tooltip div -->
+    <div id="tooltip">
+      <p class="name"></p>
+      <p class="value"></p>
+    </div>
+
+    <h3>UG map with Tooltip to show aggregated coverage score</h3>
     <div id="map"><!-- Map container --></div>
 
     <!-- JS libraries -->

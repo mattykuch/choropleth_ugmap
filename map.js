@@ -5,6 +5,57 @@ var width = 900,
 // Field refernce to csv column to add color
 var field = "score16"
 
+//Number formatting
+//
+//Create a function that take a number, adds commas for thousands,
+//and removes decimal values, e.g. 1234567.89 --> 1,234,567
+//
+var valueFormat = d3.format(",");
+
+// Logic to handle hover event when its firedup
+var hoveron = function(d) {
+      console.log('d', d, 'event', event);
+      var div = document.getElementById('tooltip');
+      div.style.left = event.pageX + 'px';
+      div.style.top = event.pageY + 'px';
+
+      
+      //Fill yellow to highlight
+      d3.select(this)
+        .style("fill", "white");
+
+      //Show the tooltip
+      d3.select("#tooltip")
+        .style("opacity", 1);
+
+      //Populate name in tooltip
+      d3.select("#tooltip .name")
+        .text(d.properties.dist);
+
+      //Populate value in tooltip
+      d3.select("#tooltip .value")
+        .text(valueFormat(d.properties.field) + "%"); 
+}
+
+var hoverout = function(d) {
+
+  //Restore original choropleth fill
+  d3.select(this)
+    .style("fill", function(d) {
+      var value = d.properties.field;
+      if (value) {
+        return color(value);
+      } else {
+        return "#ccc";
+      }
+    });
+
+  //Hide the tooltip
+  d3.select("#tooltip")
+    .style("opacity", 0);
+
+}
+
 // Create a SVG element in the map container and give it some
 // dimensions.
 var svg = d3.select('#map').append('svg')
@@ -64,6 +115,7 @@ d3.csv("data/coverage16_v3.csv", function(data) {
     // Get the scale and center parameters from the features.
     var scaleCenter = calculateScaleCenter(json);
 
+
     // Apply scale, center and translate parameters.
     projection.scale(scaleCenter.scale)
       .center(scaleCenter.center)
@@ -97,7 +149,7 @@ d3.csv("data/coverage16_v3.csv", function(data) {
       }
     }
       
-    console.log(json)
+
 
     svg.append('g') // add a <g> element to the SVG element and give it a class to style later
         .attr('class', 'features')
@@ -106,19 +158,23 @@ d3.csv("data/coverage16_v3.csv", function(data) {
         .enter()
         .append('path')
         .attr('d', path)
+        .on("mouseover", hoveron)
+        .on("mouseout", hoverout)
+        .style("cursor", "pointer")
+        .style("stroke", "#777")
         .style("fill", function(d) {
        
-          // Get data value
-          
-          var value = d.properties.field;
+            // Get data value
+            
+            var value = d.properties.field;
 
-          if (value) {
-            // If value exists ...
-            return color(value);
-          } else {
-            // If value is undefines ...
-            return "#ccc";
-          }
+            if (value) {
+              // If value exists ...
+              return color(value);
+            } else {
+              // If value is undefines ...
+              return "#ccc";
+            }
         
         });
 
